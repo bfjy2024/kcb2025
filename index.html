@@ -210,21 +210,32 @@ function renderTable(week) {
             <td class="time-col">${slot.time}节<br>${slot.period}</td>
             ${[1,2,3,4,5].map(day => {
                 const dateStr = getDateStr(week, day);
-                if (isHoliday(dateStr)) {
-                    return `<td class="holiday-cell">假期</td>`;
-                }
                 const course = courses.find(c => 
                     checkWeek(week, c.weeks) && 
                     c.day === day && 
                     c.time === slot.time
                 );
-                return course ? `
-                    <td style="background:${course.color}">
+                const cellContent = course ? `
+                    <div class="course-content">
                         <b>${course.name}</b><br>
                         ${course.classroom}<br>
                         ${course.class}
+                    </div>
+                ` : '';
+                
+                const holiday = getHolidayInfo(dateStr);
+                const holidayOverlay = holiday ? `
+                    <div class="holiday-overlay">
+                        ${holiday}
+                    </div>
+                ` : '';
+
+                return `
+                    <td style="background:${course?.color || 'transparent'}">
+                        ${cellContent}
+                        ${holidayOverlay}
                     </td>
-                ` : '<td></td>';
+                `;
             }).join('')}
         </tr>`;
     });
