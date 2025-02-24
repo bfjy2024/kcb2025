@@ -20,50 +20,81 @@
         }
 
 
-        .holiday-header {
-            position: relative;
-            background: linear-gradient(to bottom right, 
-                transparent 70%, 
-                rgba(255, 235, 59, 0.1) 70%);
+
+        @media (max-width: 768px) {
+        body {
+            padding: 10px;
         }
-        
-        /* 日期标记 */
-        .date-info {
-            position: relative;
+    
+        .week-nav button {
+            padding: 6px 10px;
+            font-size: 14px;
         }
-        
-        .holiday-icon {
-            position: absolute;
-            right: -5px;
-            top: -8px;
-            font-size: 16px;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
-        }
-        
-        /* 单元格节日标记 */
-        .holiday-tag {
-            position: absolute;
-            right: 4px;
-            top: 4px;
-            z-index: 2;
-        }
-        
-        .holiday-text {
-            display: inline-block;
-            padding: 2px 6px;
-            background: rgba(255, 235, 59, 0.9);
+    
+        .week-card {
+            padding: 15px;
             border-radius: 12px;
+        }
+    
+        th, td {
+            padding: 8px;
+            font-size: 14px;
+        }
+    
+        .time-col {
+            width: 70px;
+            font-size: 13px;
+        }
+    
+        .holiday-mark {
+            right: 2px;
+            bottom: 2px;
+        }
+    
+        .holiday-text {
             font-size: 12px;
-            color: #c62828;
-            border: 1px solid #fff3e0;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            padding: 1px 4px;
         }
-        
-        /* 课程内容层级调整 */
-        .course-content {
-            position: relative;
-            z-index: 1;
-        }
+    }
+    
+    /* 节假日标记样式 */
+    .holiday-mark {
+        position: absolute;
+        right: 4px;
+        bottom: 4px;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+    }
+    
+    .holiday-text {
+        background: rgba(255, 235, 59, 0.9);
+        color: #c62828;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 500;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .holiday-line {
+        width: 12px;
+        height: 2px;
+        background: #c62828;
+        margin-left: 4px;
+        opacity: 0.6;
+    }
+    
+    td {
+        position: relative;
+        min-height: 60px;
+    }
+    
+    .course-content {
+        position: relative;
+        z-index: 1;
+        padding: 8px;
+    }
 
         
         .week-nav {
@@ -250,16 +281,16 @@ function renderTable(week) {
             <td class="time-col">${slot.time}节<br>${slot.period}</td>
             ${[1,2,3,4,5].map(day => {
                 const dateStr = getDateStr(week, day);
+                const holiday = checkHoliday(dateStr);
                 const course = courses.find(c => 
                     checkWeek(week, c.weeks) && 
                     c.day === day && 
                     c.time === slot.time
                 );
-                const holiday = checkHoliday(dateStr);
                 
                 return `
                     <td style="background:${course?.color || 'transparent'}" 
-                        class="${holiday ? 'holiday-cell' : ''}">
+                        class="${holiday ? 'has-holiday' : ''}">
                         ${course ? `
                             <div class="course-content">
                                 <div class="course-name">${course.name}</div>
@@ -270,8 +301,9 @@ function renderTable(week) {
                             </div>
                         ` : ''}
                         ${holiday ? `
-                            <div class="holiday-tag">
-                                <span class="holiday-text">${holiday}</span>
+                            <div class="holiday-mark">
+                                <div class="holiday-text">${holiday}</div>
+                                <div class="holiday-line"></div>
                             </div>
                         ` : ''}
                     </td>
