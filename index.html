@@ -22,80 +22,84 @@
 
 
         @media (max-width: 768px) {
-        body {
-            padding: 10px;
+            body {
+                padding: 10px;
+            }
+        
+            .week-nav button {
+                padding: 6px 10px;
+                font-size: 14px;
+            }
+        
+            .week-card {
+                padding: 15px;
+                border-radius: 12px;
+            }
+        
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+        
+            .time-col {
+                width: 70px;
+                font-size: 13px;
+            }
+        
+            .holiday-mark {
+                right: 2px;
+                bottom: 2px;
+            }
+        
+            .holiday-text {
+                font-size: 12px;
+                padding: 1px 4px;
+            }
         }
     
-        .week-nav button {
-            padding: 6px 10px;
-            font-size: 14px;
-        }
-    
-        .week-card {
-            padding: 15px;
-            border-radius: 12px;
-        }
-    
-        th, td {
-            padding: 8px;
-            font-size: 14px;
-        }
-    
-        .time-col {
-            width: 70px;
-            font-size: 13px;
-        }
-    
+        /* 节假日标记样式 */
         .holiday-mark {
-            right: 2px;
-            bottom: 2px;
+            position: absolute;
+            right: 4px;
+            bottom: 4px;
+            z-index: 2;
+            display: flex;
+            align-items: center;
         }
-    
+        
         .holiday-text {
-            font-size: 12px;
-            padding: 1px 4px;
+            background: rgba(255, 235, 59, 0.9);
+            color: #c62828;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
-    }
-    
-    /* 节假日标记样式 */
-    .holiday-mark {
-        position: absolute;
-        right: 4px;
-        bottom: 4px;
-        z-index: 2;
-        display: flex;
-        align-items: center;
-    }
-    
-    .holiday-text {
-        background: rgba(255, 235, 59, 0.9);
-        color: #c62828;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 13px;
-        font-weight: 500;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    }
-    
-    .holiday-line {
-        width: 12px;
-        height: 2px;
-        background: #c62828;
-        margin-left: 4px;
-        opacity: 0.6;
-    }
-    
-    td {
-        position: relative;
-        min-height: 60px;
-    }
-    
-    .course-content {
-        position: relative;
-        z-index: 1;
-        padding: 8px;
-    }
+        
+        .holiday-line {
+            width: 12px;
+            height: 2px;
+            background: #c62828;
+            margin-left: 4px;
+            opacity: 0.6;
+        }
+        
+        td {
+            position: relative;
+            min-height: 60px;
+        }
+        
+        .course-content {
+            position: relative;
+            z-index: 1;
+            padding: 8px;
+        }
 
+        .course-name {
+            font-weight: 600 !important;  /* 新增加粗样式 */
+            margin-bottom: 6px;
+        }
         
         .week-nav {
             display: flex;
