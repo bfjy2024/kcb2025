@@ -18,7 +18,18 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-
+        //下面为节假日新增
+        .holiday-tag {
+            color: #d32f2f;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .holiday-cell {
+            background: #ffebee !important;
+            color: #d32f2f;
+            font-weight: bold;
+            text-align: center;
+        }
         .week-nav {
             display: flex;
             gap: 8px;
@@ -85,6 +96,13 @@
 <script>
 // 基础数据
 const startDate = new Date(2025, 1, 24); // 2025-02-24
+const holidays = [
+    { name: '清明节', date: '2025-04-04', duration: 3 },
+    { name: '劳动节', date: '2025-05-01', duration: 5 },
+    { name: '端午节', date: '2025-05-31', duration: 3 },
+    { name: '中秋节', date: '2025-09-06', duration: 3 },
+    { name: '国庆节', date: '2025-10-01', duration: 7 }
+];
 const courses = [
     { // 星期一
         name: '高数', weeks: '2-16双', time: '1-2', day: 1,
@@ -175,16 +193,26 @@ function renderTable(week) {
     let html = `<table>
         <tr>
             <th class="time-col">时间</th>
-            ${[1,2,3,4,5].map(d => `
-                <th>星期${['一','二','三','四','五'][d-1]}<br>
-                <small>${getDateStr(week, d)}</small></th>
-            `).join('')}
+            ${[1,2,3,4,5].map(d => {
+                const dateStr = getDateStr(week, d);
+                const holiday = getHolidayInfo(dateStr);
+                return `
+                    <th>星期${['一','二','三','四','五'][d-1]}<br>
+                    <small>${dateStr}</small>
+                    ${holiday ? `<div class="holiday-tag">${holiday}</div>` : ''}
+                    </th>
+                `;
+            }).join('')}
         </tr>`;
 
     timeSlots.forEach(slot => {
         html += `<tr>
             <td class="time-col">${slot.time}节<br>${slot.period}</td>
             ${[1,2,3,4,5].map(day => {
+                const dateStr = getDateStr(week, day);
+                if (isHoliday(dateStr)) {
+                    return `<td class="holiday-cell">假期</td>`;
+                }
                 const course = courses.find(c => 
                     checkWeek(week, c.weeks) && 
                     c.day === day && 
@@ -203,7 +231,6 @@ function renderTable(week) {
 
     return html + '</table>';
 }
-
 // 辅助函数
 function checkWeek(current, condition) {
     if (condition.includes('无')) {
@@ -242,7 +269,26 @@ function getDateRange(week) {
     end.setDate(start.getDate()+4);
     return `${start.getMonth()+1}/${start.getDate()} - ${end.getMonth()+1}/${end.getDate()}`;
 }
+//下面函数为节假日新增
+function getHolidayInfo(dateStr) {
+    const [month, day] = dateStr.split('/');
+    const date = `2025-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    
+    for (const h of holidays) {
+        const start = new Date(h.date);
+        const end = new Date(start);
+        end.setDate(start.getDate() + h.duration - 1);
+        const current = new Date(date);
+        if (current >= start && current <= end) {
+            return h.name;
+        }
+    }
+    return null;
+}
 
+function isHoliday(dateStr) {
+    return getHolidayInfo(dateStr) !== null;
+}
 function highlightCurrent() {
     const now = new Date();
     const currentWeek = getCurrentWeek();
