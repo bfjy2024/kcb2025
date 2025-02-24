@@ -19,43 +19,52 @@
             margin: 0 auto;
         }
         //下面为节假日新增
-        .holiday-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 235, 238, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #d32f2f;
-            pointer-events: none;
-        }
-        
-        td {
-            position: relative;
-            min-height: 80px;
-        }
-        
-        .course-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .holiday-tag {
-            color: #d32f2f;
-            font-size: 12px;
-            margin-top: 4px;
-        }
-        .holiday-cell {
-            background: #ffebee !important;
-            color: #d32f2f;
-            font-weight: bold;
-            text-align: center;
-        }
+.holiday-header {
+    position: relative;
+    background: linear-gradient(45deg, #fff3e0 20%, transparent 20%);
+    &::after {
+        content: '';
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        width: 6px;
+        height: 6px;
+        background: #ff6d00;
+        border-radius: 50%;
+    }
+}
+
+.holiday-cell {
+    position: relative;
+    &::before {
+        content: attr(data-holiday);
+        position: absolute;
+        right: 4px;
+        bottom: 4px;
+        font-size: 12px;
+        color: #ff6d00;
+        background: rgba(255,244,229,0.9);
+        padding: 2px 4px;
+        border-radius: 4px;
+        border: 1px solid #ffe0b2;
+    }
+}
+
+.date-info {
+    position: relative;
+    .holiday-marker {
+        position: absolute;
+        right: -5px;
+        top: -5px;
+        font-size: 14px;
+        filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+    }
+}
+
+.course-card {
+    position: relative;
+    z-index: 1;
+}
         .week-nav {
             display: flex;
             gap: 8px;
@@ -223,9 +232,12 @@ function renderTable(week) {
                 const dateStr = getDateStr(week, d);
                 const holiday = getHolidayInfo(dateStr);
                 return `
-                    <th>星期${['一','二','三','四','五'][d-1]}<br>
-                    <small>${dateStr}</small>
-                    ${holiday ? `<div class="holiday-tag">${holiday}</div>` : ''}
+                    <th class="${holiday ? 'holiday-header' : ''}">
+                        星期${['一','二','三','四','五'][d-1]}
+                        <div class="date-info">
+                            ${dateStr}
+                            ${holiday ? `<span class="holiday-marker">🎉</span>` : ''}
+                        </div>
                     </th>
                 `;
             }).join('')}
@@ -241,25 +253,20 @@ function renderTable(week) {
                     c.day === day && 
                     c.time === slot.time
                 );
-                const cellContent = course ? `
-                    <div class="course-content">
-                        <b>${course.name}</b><br>
-                        ${course.classroom}<br>
-                        ${course.class}
-                    </div>
-                ` : '';
-                
                 const holiday = getHolidayInfo(dateStr);
-                const holidayOverlay = holiday ? `
-                    <div class="holiday-overlay">
-                        ${holiday}
-                    </div>
-                ` : '';
-
+                
                 return `
-                    <td style="background:${course?.color || 'transparent'}">
-                        ${cellContent}
-                        ${holidayOverlay}
+                    <td class="${holiday ? 'holiday-cell' : ''}" 
+                        ${holiday ? `data-holiday="${holiday}"` : ''}>
+                        ${course ? `
+                            <div class="course-card">
+                                <div class="course-name">${course.name}</div>
+                                <div class="course-detail">
+                                    ${course.classroom}<br>
+                                    ${course.class}
+                                </div>
+                            </div>
+                        ` : ''}
                     </td>
                 `;
             }).join('')}
